@@ -16,5 +16,4 @@ export default defineConfig([
   },
   tseslint.configs.recommended,
   pluginSecurity.configs.recommended,
-]
-);
+]);
