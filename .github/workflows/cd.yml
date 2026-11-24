@@ -6,6 +6,9 @@ jobs:
   Deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Check out code
@@ -21,3 +24,16 @@ jobs:
 
       - name: Builds the app
         run: npm run build
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: notely-515614
+          workload_identity_provider: projects/671054786799/locations/global/workloadIdentityPools/github/providers/my-repo
+          service_account: cloud-run-deployer@notely-515614.iam.gserviceaccount.com
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Build and push Docker image
+        run: gcloud builds submit --tag us-central1-docker.pkg.dev/PROJECT_ID/notely-ar-repo/notely:latest .
